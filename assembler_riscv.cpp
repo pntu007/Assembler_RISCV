@@ -11,7 +11,7 @@ using namespace std;
 unordered_map<string,char>m{
     {"add",'R'},{"sub",'R'},{"and",'R'},
     {"or",'R'},{"xor",'R'},{"sll",'R'},
-    {"srl",'R'},
+    {"srl",'R'},{"slt",'R'},
 
     {"addi",'I'},{"xori",'I'},{"ori",'I'},
     {"andi",'I'},{"slli",'I'},{"srli",'I'},
@@ -45,7 +45,7 @@ class assembler{
 
         void openFile(string s){
             string myText;
-            ifstream MyReadFile(s);
+            ifstream MyReadFile("./testing/" + s);
             int lineNumber =0;
             while(getline(MyReadFile, myText)){
                 if(myText=="") continue;
@@ -89,7 +89,17 @@ class assembler{
                 i--;
             }
 
-            if(isNegative) inBinary[0] = '1';
+            if(isNegative){
+                // inBinary[0] = '1';
+                for(int i=0;i<length;i++) inBinary[i] = (inBinary[i]=='0')? '1' : '0';
+                for(int i=length-1;i>=0;i--){
+                    if(inBinary[i]=='0'){
+                        inBinary[i]='1';
+                        break;
+                    }
+                    inBinary[i]='0';
+                }
+            }
             return inBinary;
             // string inBinary = "";
             // while(num!=0){
@@ -106,7 +116,7 @@ class assembler{
             for(int i = 1; i < instructionSplit.size(); i++) {
                 toCheck += instructionSplit[i];
             }
-            
+
             int i=0, j=0;
             while(j<s.size() && i<toCheck.size()){
                 if(s[j]=='x' && toCheck[i]=='x') i++;
@@ -167,12 +177,15 @@ class assembler{
        }
 
        void getBinaryFile(string name){
-            string s="";
+            cout<<name<<endl;
+            string s="./testing/";
             for(auto x:name){
                 if(x=='.') break;
                 s+=x;
             }
-            ofstream MyFile(s);
+            cout<<name<<endl;
+            cout<<s<<endl;
+            ofstream MyFile(s+".o");
             for(auto line : binaryString){
                 MyFile<<line<<"\n";
             }
@@ -227,12 +240,13 @@ void assembler :: rtype(){
     string f3="";
 
     if(instructionSplit[0]=="add") f3 = "000";
-    else if(instructionSplit[0]=="or") f3 = "001";
-    else if(instructionSplit[0]=="xor") f3 = "010";
+    else if(instructionSplit[0]=="sll") f3 = "001";
+    else if(instructionSplit[0]=="slt") f3 = "010";
     else if(instructionSplit[0]=="sub") f3 = "011";
-    else if(instructionSplit[0]=="and") f3 = "100";
+    else if(instructionSplit[0]=="xor") f3 = "100";
     else if(instructionSplit[0]=="srl") f3 = "101";
-    else if(instructionSplit[0]=="sll") f3 = "110";
+    else if(instructionSplit[0]=="or") f3 = "110";
+    else if(instructionSplit[0]=="and") f3 = "111";
     
     string rd = getBinary(instructionSplit[1],5);
     string rs1 = getBinary(instructionSplit[2],5);
@@ -246,11 +260,11 @@ void assembler :: itype(){
     string f3="";
 
     if(instructionSplit[0]=="addi") f3 = "000";
-    else if(instructionSplit[0]=="ori") f3 = "001";
-    else if(instructionSplit[0]=="xori") f3 = "010";
-    else if(instructionSplit[0]=="andi") f3 = "011";
-    else if(instructionSplit[0]=="srli") f3 = "100";
-    else if(instructionSplit[0]=="slli") f3 = "101";
+    else if(instructionSplit[0]=="slli") f3 = "001";
+    else if(instructionSplit[0]=="xori") f3 = "100";
+    else if(instructionSplit[0]=="srli") f3 = "101";
+    else if(instructionSplit[0]=="ori") f3 = "110";
+    else if(instructionSplit[0]=="andi") f3 = "111";
     
     string rd = getBinary(instructionSplit[1],5);
     string rs1 = getBinary(instructionSplit[2],5);
@@ -266,8 +280,8 @@ void assembler :: iltype(){
     if(instructionSplit[0]=="lb") f3 = "000";
     else if(instructionSplit[0]=="lh") f3 = "001";
     else if(instructionSplit[0]=="lw") f3 = "010";
-    else if(instructionSplit[0]=="lbu") f3 = "011";
-    else if(instructionSplit[0]=="lhu") f3 = "100";
+    else if(instructionSplit[0]=="lbu") f3 = "100";
+    else if(instructionSplit[0]=="lhu") f3 = "101";
     
     string rd = getBinary(instructionSplit[1],5);
     string imm = getBinary(instructionSplit[2],12);
@@ -298,7 +312,8 @@ void assembler :: stype(){
 void assembler :: jtype(int line){
     string opcode = "1101111";
     string rd = getBinary(instructionSplit[1],5);
-    string immt = getBinary(instructionSplit[2],20,true,line);
+    string immt = getBinary(instructionSplit[2],21,true,line);
+    // immt = "1" + immt;
 
     string imm = immt[0] + immt.substr(10,10) + immt[9] + immt.substr(1,8);
 
@@ -311,17 +326,18 @@ void assembler :: btype(int line){
 
     if(instructionSplit[0]=="beq") f3 = "000";
     else if(instructionSplit[0]=="bne") f3 = "001";
-    else if(instructionSplit[0]=="blt") f3 = "010";
-    else if(instructionSplit[0]=="bge") f3 = "011";
-    else if(instructionSplit[0]=="bltu") f3 = "100";
-    else if(instructionSplit[0]=="bgeu") f3 = "101";
+    else if(instructionSplit[0]=="blt") f3 = "100";
+    else if(instructionSplit[0]=="bge") f3 = "101";
+    else if(instructionSplit[0]=="bltu") f3 = "110";
+    else if(instructionSplit[0]=="bgeu") f3 = "111";
 
     string rs1 = getBinary(instructionSplit[1],5);
     string rs2 = getBinary(instructionSplit[2],5);
     string imm = getBinary(instructionSplit[3],13,true,line); 
 
-    // string imm2 = imm.substr(0,7); 
-    // string imm1 = imm.substr(7,5);
+    // imm[1]=imm[0];
+    // string imm2 = imm.substr(1,7); 
+    // string imm1 = imm.substr(8,5);
 
     string imm2 = imm[0] + imm.substr(2,6);
     string imm1 = imm.substr(8,4) + imm[1];
@@ -330,7 +346,7 @@ void assembler :: btype(int line){
 }
  
 void assembler :: utype(){
-    string opcode = "0000110";
+    string opcode = "0110111";
 
     string rd = getBinary(instructionSplit[1],5);
     string imm = getBinary(instructionSplit[2],20);
@@ -339,7 +355,7 @@ void assembler :: utype(){
 }
 
 int main(){
-    string s="filename.s";
+    string s="tets1.s";
     // cout<<"ENTER THE STRING: ";
     // getline(cin, s);
     assembler a(s);
@@ -357,4 +373,9 @@ int main(){
 // 00000000101000011010000100000011
 // 10000000000000000010000101101111
 // 00000000000100011010011010100011
+
+// 3. 
+// 00000000001000011001000101100011
+// 5
+// 10000000010000000000000101101111
 }
