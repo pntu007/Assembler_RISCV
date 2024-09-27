@@ -355,7 +355,7 @@ void assembler :: utype(){
 }
 
 int main(){
-    string s="tets1.s";
+    string s="filename.s";
     // cout<<"ENTER THE STRING: ";
     // getline(cin, s);
     assembler a(s);
