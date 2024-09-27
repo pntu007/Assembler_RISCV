@@ -1,4 +1,4 @@
-# RISC-V to Binary Converter
+# Converter RISC-V
 
 ## Overview
 
@@ -63,8 +63,8 @@ The converter supports the following instructions, grouped by their types:
 
 ### Compilation
 - First create a input file inside the testing folder
-- Write the input file name in the main function of assembler_riscv.cpp
-- Then compile the assembler_riscv.cpp
+- Write the input file name in the main function of converter_riscv.cpp
+- Then compile the converter_riscv.cpp
 - To compile, you can run the following command:
 
 ```bash
