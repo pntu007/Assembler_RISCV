@@ -50,6 +50,7 @@ class assembler{
             while(getline(MyReadFile, myText)){
                 if(myText=="") continue;
                 if(myText.find(':')==string::npos){
+                    // cout<<myText<<endl;
                     inputFile.push_back(myText);
                     lineNumber++;
                 } 
@@ -177,14 +178,13 @@ class assembler{
        }
 
        void getBinaryFile(string name){
-            cout<<name<<endl;
             string s="./testing/";
             for(auto x:name){
                 if(x=='.') break;
-                s+=x;
+                s.push_back(x);
             }
-            cout<<name<<endl;
-            cout<<s<<endl;
+            // cout<<name<<endl;
+            // cout<<s<<endl;
             ofstream MyFile(s+".o");
             for(auto line : binaryString){
                 MyFile<<line<<"\n";
