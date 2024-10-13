@@ -312,12 +312,13 @@ void assembler :: stype(){
 void assembler :: jtype(int line){
     string opcode = "1101111";
     string rd = getBinary(instructionSplit[1],5);
-    string immt = getBinary(instructionSplit[2],21,true,line);
-    // immt = "1" + immt;
+    // string immt = getBinary(instructionSplit[2],21,true,line);
+    // // immt = "1" + immt;
 
-    string imm = immt[0] + immt.substr(10,10) + immt[9] + immt.substr(1,8);
+    // string imm = immt[0] + immt.substr(10,10) + immt[9] + immt.substr(1,8);
 
-    binaryString.push_back(imm + rd + opcode);
+    string immt = getBinary(instructionSplit[2],20,true,line);
+    binaryString.push_back(immt + rd + opcode);
 }
 
 void assembler :: btype(int line){
@@ -333,15 +334,17 @@ void assembler :: btype(int line){
 
     string rs1 = getBinary(instructionSplit[1],5);
     string rs2 = getBinary(instructionSplit[2],5);
-    string imm = getBinary(instructionSplit[3],13,true,line); 
+    // string imm = getBinary(instructionSplit[3],13,true,line); 
 
-    // imm[1]=imm[0];
-    // string imm2 = imm.substr(1,7); 
-    // string imm1 = imm.substr(8,5);
+    // // imm[1]=imm[0];
+    // // string imm2 = imm.substr(1,7); 
+    // // string imm1 = imm.substr(8,5);
 
-    string imm2 = imm[0] + imm.substr(2,6);
-    string imm1 = imm.substr(8,4) + imm[1];
-    
+    // string imm2 = imm[0] + imm.substr(2,6);
+    // string imm1 = imm.substr(8,4) + imm[1];
+    string imm = getBinary(instructionSplit[3],12,true,line); 
+    string imm2 = imm.substr(0,7);
+    string imm1 = imm.substr(7,5);
     binaryString.push_back(imm2 + rs2 + rs1 + f3 + imm1 + opcode);
 }
  
@@ -355,7 +358,7 @@ void assembler :: utype(){
 }
 
 int main(){
-    string s="filename.s";
+    string s="p.s";
     // cout<<"ENTER THE STRING: ";
     // getline(cin, s);
     assembler a(s);

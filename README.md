@@ -55,6 +55,7 @@ The converter supports the following instructions, grouped by their types:
 ## Features
 - Converts RISC-V assembly instructions into their binary format.
 - Supports multiple instruction types: R, I, L, S, J, B, and U.
+- The encoding of Immediate in the B and J type instruction is done in normal form rather than that given in the RISCV_CARD
 
 ## Getting Started
 
