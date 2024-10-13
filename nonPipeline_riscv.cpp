@@ -22,28 +22,20 @@ private:
     int programCounter = 0; // Points to the current line of execution
     bool isPcUpdated = false;
     string instruction;
+
     // Stage 3 variables
-    int instructionImmediate;
-    string controlWord_s3;
+    string controlWord;
     int registerSource1;
-    int registerSource2_s3;
+    int registerSource2;
     int immediate;
     string function3;
-    int registerDestination_s3;
+    int registerDestination;
 
     // Stage 4 variables
-    int airthmeticUnitOut_s4;
-    string controlWord_s4;
-    int registerSource2_s4;
-    int registerDestination_s4;
+    int airthmeticUnitOut;
 
     // Stage 5 variables
     int loadOut;
-    int airthmeticUnitOut_s5;
-    string controlWord_s5;
-    int registerDestination_s5;
-
-    bool bubbleInserted = false; // To check if a bubble has been inserted
 
     void openFile(string s){
         string myText;
@@ -81,13 +73,11 @@ public:
         cout<<"file name "<<a<<endl; 
         openFile(a);
         while(programCounter < inputFile.size()){
-            isPcUpdated = false;
             stage1();
             stage2();
             stage3();
             stage4();
             stage5();
-            if(!isPcUpdated) programCounter++; 
         }
 
     }
@@ -109,18 +99,18 @@ void pipeline :: stage2() {
 
     cout<<"stage2.. start"<<endl;
     char type = m[instruction.substr(25, 7)]; // opcode for cw
-    registerDestination_s3 = stoi(instruction.substr(20, 5), NULL, 2);
+    registerDestination = stoi(instruction.substr(20, 5), NULL, 2);
     function3 = instruction.substr(17, 3);
     registerSource1 = stoi(instruction.substr(12, 5), NULL, 2);
-    registerSource2_s3 = stoi(instruction.substr(7, 5), NULL, 2);
+    registerSource2 = stoi(instruction.substr(7, 5), NULL, 2);
     immediate = getImmdiate(type,instruction);
 
-    controlWord_s3 = string(1,type);
+    controlWord = string(1,type);
 
     cout<<"Type "<<type<<endl;
-    cout<<"rd "<<registerDestination_s3<<endl;
+    cout<<"rd "<<registerDestination<<endl;
     cout<<"f3 "<<function3<<endl;
-    cout<<"rs2 "<<registerSource2_s3<<endl;
+    cout<<"rs2 "<<registerSource2<<endl;
     cout<<"rs1 "<<registerSource1<<endl;
     cout<<"imm "<<immediate<<endl;
 
@@ -130,103 +120,103 @@ void pipeline :: stage2() {
 
 void pipeline :: stage3() {
     cout<<"stage3.. start"<<endl;
-    if(controlWord_s3 == "R"){
+    if(controlWord == "R"){
         if(function3 == "000"){ // ADD operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] + myRegister[registerSource2_s3];
-            cout<<"Add performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] + myRegister[registerSource2];
+            cout<<"Add performed : "<<airthmeticUnitOut<<endl;
         } 
         else if(function3 == "001"){ // SLL operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] << (myRegister[registerSource2_s3] & 0x1F);
-            cout<<"SLL performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] << (myRegister[registerSource2] & 0x1F);
+            cout<<"SLL performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "010"){ // SLT operation
-            airthmeticUnitOut_s4 = (myRegister[registerSource1] < myRegister[registerSource2_s3]) ? 1 : 0;
-            cout<<"SLT performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = (myRegister[registerSource1] < myRegister[registerSource2]) ? 1 : 0;
+            cout<<"SLT performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "011"){ // SUB operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] - myRegister[registerSource2_s3];
-            cout<<"SUB performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] - myRegister[registerSource2];
+            cout<<"SUB performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "100"){ // XOR operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] ^ myRegister[registerSource2_s3];
-            cout<<"XOR performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] ^ myRegister[registerSource2];
+            cout<<"XOR performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "101"){ // SRL operation
-            airthmeticUnitOut_s4 = (unsigned)myRegister[registerSource1] >> (myRegister[registerSource2_s3] & 0x1F);
-            cout<<"SRL performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = (unsigned)myRegister[registerSource1] >> (myRegister[registerSource2] & 0x1F);
+            cout<<"SRL performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "110"){ // OR operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] | myRegister[registerSource2_s3];
-            cout<<"OR performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] | myRegister[registerSource2];
+            cout<<"OR performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "111"){ // AND operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] & myRegister[registerSource2_s3];
-            cout<<"AND performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] & myRegister[registerSource2];
+            cout<<"AND performed : "<<airthmeticUnitOut<<endl;
         }
     }
 
     
-    else if(controlWord_s3 == "I"){ 
+    else if(controlWord == "I"){ 
         if (function3 == "000") { // ADDI operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] + immediate;
-            cout<<"Addi performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] + immediate;
+            cout<<"Addi performed : "<<airthmeticUnitOut<<endl;
         } 
         else if(function3 == "001"){ // SLLI operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] ^ immediate;
-            cout<<"slli performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"slli performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "100"){ // XORI operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] ^ immediate;
-            cout<<"xori performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"xori performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "101"){ // SRLI operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] ^ immediate;
-            cout<<"srli performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"srli performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "110"){ // ORI operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] ^ immediate;
-            cout<<"ori performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"ori performed : "<<airthmeticUnitOut<<endl;
         }
         else if(function3 == "111"){ // ANDI operation
-            airthmeticUnitOut_s4 = myRegister[registerSource1] ^ immediate;
-            cout<<"Andi performed : "<<airthmeticUnitOut_s4<<endl;
+            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"Andi performed : "<<airthmeticUnitOut<<endl;
         }
     } 
 
-    else if(controlWord_s3 == "S" || controlWord_s3 == "L"){
-        airthmeticUnitOut_s4 = myRegister[registerSource1] + immediate;
-        cout<<"effective address calculated : "<<airthmeticUnitOut_s4<<endl;
+    else if(controlWord == "S" || controlWord == "L"){
+        airthmeticUnitOut = myRegister[registerSource1] + immediate;
+        cout<<"effective address calculated : "<<airthmeticUnitOut<<endl;
     }
 
-    else if(controlWord_s3 == "J"){ 
+    else if(controlWord == "J"){ 
 
-        airthmeticUnitOut_s4 = programCounter + immediate;
-        myRegister[registerDestination_s3] = programCounter;
-        programCounter = airthmeticUnitOut_s4;
+        airthmeticUnitOut = programCounter + immediate;
+        myRegister[registerDestination] = programCounter;
+        programCounter = airthmeticUnitOut;
         isPcUpdated = true;
         cout<<"Jump executed.. pc : "<<programCounter<<endl;
     }
 
-    else if(controlWord_s3 == "B") { 
+    else if(controlWord == "B") { 
         bool branchTaken = false;
 
         if(function3 == "000"){ // BEQ 
-            branchTaken = (myRegister[registerSource1]==myRegister[registerSource2_s3]);
+            branchTaken = (myRegister[registerSource1]==myRegister[registerSource2]);
         } 
         else if(function3 == "001"){ // BNE 
-            branchTaken = (myRegister[registerSource1]!=myRegister[registerSource2_s3]);
+            branchTaken = (myRegister[registerSource1]!=myRegister[registerSource2]);
         } 
         else if(function3 == "100"){ // BLT 
-            branchTaken = (myRegister[registerSource1]<myRegister[registerSource2_s3]);
+            branchTaken = (myRegister[registerSource1]<myRegister[registerSource2]);
         } 
         else if(function3 == "101"){ // BGE 
-            branchTaken = (myRegister[registerSource1]>=myRegister[registerSource2_s3]);
+            branchTaken = (myRegister[registerSource1]>=myRegister[registerSource2]);
         }
         else if(function3 == "110"){ //BLTU
-            branchTaken = (myRegister[registerSource1]<myRegister[registerSource2_s3]);
+            branchTaken = (myRegister[registerSource1]<myRegister[registerSource2]);
         }
         else if(function3 == "111"){ //BGEU
-            branchTaken = (myRegister[registerSource1]>=myRegister[registerSource2_s3]);
+            branchTaken = (myRegister[registerSource1]>=myRegister[registerSource2]);
         }
 
         if(branchTaken){
@@ -236,53 +226,51 @@ void pipeline :: stage3() {
         }
     }
 
-    controlWord_s4 = controlWord_s3;
-    registerDestination_s4 = registerDestination_s3;
-    registerSource2_s4 = registerSource2_s3;
+    controlWord = controlWord;
+    registerDestination = registerDestination;
+    registerSource2 = registerSource2;
     cout<<"stage3.. exit"<<endl;
 }
 
 void pipeline :: stage4() {
     cout<<"stage4.. start"<<endl;
-    if(controlWord_s4 == "L"){ 
-        loadOut = myMemory[airthmeticUnitOut_s4];
+    if(controlWord == "L"){ 
+        loadOut = myMemory[airthmeticUnitOut];
         cout<<"load performed : "<<loadOut<<endl;
     } 
-    else if(controlWord_s4 == "S"){ 
-        myMemory[airthmeticUnitOut_s4] = myRegister[registerSource2_s4];
-        cout<<"store performed : "<<myMemory[airthmeticUnitOut_s4] <<endl;
+    else if(controlWord == "S"){ 
+        myMemory[airthmeticUnitOut] = myRegister[registerSource2];
+        cout<<"store performed : "<<myMemory[airthmeticUnitOut] <<endl;
     }
 
-    controlWord_s5 = controlWord_s4;
-    airthmeticUnitOut_s5 = airthmeticUnitOut_s4;
-    registerDestination_s5 = registerDestination_s4;
+    controlWord = controlWord;
+    airthmeticUnitOut = airthmeticUnitOut;
+    registerDestination = registerDestination;
 
     cout<<"stage4.. exit"<<endl;
 }
 
 void pipeline :: stage5() {
     cout<<"stage5.. start"<<endl;
-    if(controlWord_s5 == "R" || controlWord_s5 == "I"){ 
-        myRegister[registerDestination_s5] = airthmeticUnitOut_s5;
-        cout<<"wb performed : "<<myRegister[registerDestination_s5]<<endl;
+    if(controlWord == "R" || controlWord == "I"){ 
+        myRegister[registerDestination] = airthmeticUnitOut;
+        cout<<"wb performed : "<<myRegister[registerDestination]<<endl;
     } 
-    else if(controlWord_s5 == "L"){ 
-        myRegister[registerDestination_s5] = loadOut;
-        cout<<"wb performed : "<<myRegister[registerDestination_s5]<<endl;
+    else if(controlWord == "L"){ 
+        myRegister[registerDestination] = loadOut;
+        cout<<"wb performed : "<<myRegister[registerDestination]<<endl;
     }
 
+    if(!isPcUpdated) programCounter++;
+    isPcUpdated = false;
     cout<<"stage5.. exit"<<endl;
     
 }
 
 int main(){
     string s = "p.o";
-
-    // myRegister[6]=3;
-    myMemory[0]=10;
-    
+    myMemory[0]=11;
     pipeline p(s);
-    // cout<<myRegister[1]<<endl;
     cout<<myMemory[1]<<endl;
     
 }
