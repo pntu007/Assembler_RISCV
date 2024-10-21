@@ -32,7 +32,7 @@ private:
     int registerDestination;
 
     // Stage 4 variables
-    int airthmeticUnitOut;
+    int arithmeticUnitOut;
 
     // Stage 5 variables
     int loadOut;
@@ -47,7 +47,7 @@ private:
         MyReadFile.close();
     }
 
-    int getImmdiate(char type,string s){
+    int getImmediate(char type,string s){
         if(type == 'I' || type == 'L') return stoi(s.substr(0,12),NULL,2);
         else if(type == 'U') return stoi(s.substr(0,20),NULL,2);
         else if(type == 'S'){
@@ -57,7 +57,7 @@ private:
         else if(type == 'B'){
             string temp = s.substr(0,7)+s.substr(20,5);
             int value = stoi(temp,NULL,2);
-            if(temp[0]=='1') value-= (1 << 5);
+            if(temp[0]=='1') value-= (1 << 12);
             return value;
         }
         else{
@@ -103,7 +103,7 @@ void pipeline :: stage2() {
     function3 = instruction.substr(17, 3);
     registerSource1 = stoi(instruction.substr(12, 5), NULL, 2);
     registerSource2 = stoi(instruction.substr(7, 5), NULL, 2);
-    immediate = getImmdiate(type,instruction);
+    immediate = getImmediate(type,instruction);
 
     controlWord = string(1,type);
 
@@ -122,77 +122,77 @@ void pipeline :: stage3() {
     cout<<"stage3.. start"<<endl;
     if(controlWord == "R"){
         if(function3 == "000"){ // ADD operation
-            airthmeticUnitOut = myRegister[registerSource1] + myRegister[registerSource2];
-            cout<<"Add performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] + myRegister[registerSource2];
+            cout<<"Add performed : "<<arithmeticUnitOut<<endl;
         } 
         else if(function3 == "001"){ // SLL operation
-            airthmeticUnitOut = myRegister[registerSource1] << (myRegister[registerSource2] & 0x1F);
-            cout<<"SLL performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] << (myRegister[registerSource2] & 0x1F);
+            cout<<"SLL performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "010"){ // SLT operation
-            airthmeticUnitOut = (myRegister[registerSource1] < myRegister[registerSource2]) ? 1 : 0;
-            cout<<"SLT performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = (myRegister[registerSource1] < myRegister[registerSource2]) ? 1 : 0;
+            cout<<"SLT performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "011"){ // SUB operation
-            airthmeticUnitOut = myRegister[registerSource1] - myRegister[registerSource2];
-            cout<<"SUB performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] - myRegister[registerSource2];
+            cout<<"SUB performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "100"){ // XOR operation
-            airthmeticUnitOut = myRegister[registerSource1] ^ myRegister[registerSource2];
-            cout<<"XOR performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] ^ myRegister[registerSource2];
+            cout<<"XOR performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "101"){ // SRL operation
-            airthmeticUnitOut = (unsigned)myRegister[registerSource1] >> (myRegister[registerSource2] & 0x1F);
-            cout<<"SRL performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = (unsigned)myRegister[registerSource1] >> (myRegister[registerSource2] & 0x1F);
+            cout<<"SRL performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "110"){ // OR operation
-            airthmeticUnitOut = myRegister[registerSource1] | myRegister[registerSource2];
-            cout<<"OR performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] | myRegister[registerSource2];
+            cout<<"OR performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "111"){ // AND operation
-            airthmeticUnitOut = myRegister[registerSource1] & myRegister[registerSource2];
-            cout<<"AND performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] & myRegister[registerSource2];
+            cout<<"AND performed : "<<arithmeticUnitOut<<endl;
         }
     }
 
     
     else if(controlWord == "I"){ 
         if (function3 == "000") { // ADDI operation
-            airthmeticUnitOut = myRegister[registerSource1] + immediate;
-            cout<<"Addi performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] + immediate;
+            cout<<"Addi performed : "<<arithmeticUnitOut<<endl;
         } 
         else if(function3 == "001"){ // SLLI operation
-            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
-            cout<<"slli performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"slli performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "100"){ // XORI operation
-            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
-            cout<<"xori performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"xori performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "101"){ // SRLI operation
-            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
-            cout<<"srli performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"srli performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "110"){ // ORI operation
-            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
-            cout<<"ori performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"ori performed : "<<arithmeticUnitOut<<endl;
         }
         else if(function3 == "111"){ // ANDI operation
-            airthmeticUnitOut = myRegister[registerSource1] ^ immediate;
-            cout<<"Andi performed : "<<airthmeticUnitOut<<endl;
+            arithmeticUnitOut = myRegister[registerSource1] ^ immediate;
+            cout<<"Andi performed : "<<arithmeticUnitOut<<endl;
         }
     } 
 
     else if(controlWord == "S" || controlWord == "L"){
-        airthmeticUnitOut = myRegister[registerSource1] + immediate;
-        cout<<"effective address calculated : "<<airthmeticUnitOut<<endl;
+        arithmeticUnitOut = myRegister[registerSource1] + immediate;
+        cout<<"effective address calculated : "<<arithmeticUnitOut<<endl;
     }
 
     else if(controlWord == "J"){ 
 
-        airthmeticUnitOut = programCounter + immediate;
+        arithmeticUnitOut = programCounter + immediate;
         myRegister[registerDestination] = programCounter;
-        programCounter = airthmeticUnitOut;
+        programCounter = arithmeticUnitOut;
         isPcUpdated = true;
         cout<<"Jump executed.. pc : "<<programCounter<<endl;
     }
@@ -235,16 +235,16 @@ void pipeline :: stage3() {
 void pipeline :: stage4() {
     cout<<"stage4.. start"<<endl;
     if(controlWord == "L"){ 
-        loadOut = myMemory[airthmeticUnitOut];
+        loadOut = myMemory[arithmeticUnitOut];
         cout<<"load performed : "<<loadOut<<endl;
     } 
     else if(controlWord == "S"){ 
-        myMemory[airthmeticUnitOut] = myRegister[registerSource2];
-        cout<<"store performed : "<<myMemory[airthmeticUnitOut] <<endl;
+        myMemory[arithmeticUnitOut] = myRegister[registerSource2];
+        cout<<"store performed : "<<myMemory[arithmeticUnitOut] <<endl;
     }
 
     controlWord = controlWord;
-    airthmeticUnitOut = airthmeticUnitOut;
+    arithmeticUnitOut = arithmeticUnitOut;
     registerDestination = registerDestination;
 
     cout<<"stage4.. exit"<<endl;
@@ -253,7 +253,7 @@ void pipeline :: stage4() {
 void pipeline :: stage5() {
     cout<<"stage5.. start"<<endl;
     if(controlWord == "R" || controlWord == "I"){ 
-        myRegister[registerDestination] = airthmeticUnitOut;
+        myRegister[registerDestination] = arithmeticUnitOut;
         cout<<"wb performed : "<<myRegister[registerDestination]<<endl;
     } 
     else if(controlWord == "L"){ 
@@ -268,9 +268,10 @@ void pipeline :: stage5() {
 }
 
 int main(){
-    string s = "p.o";
-    myMemory[0]=11;
+    string s = "negativeL.o";
+    myMemory[0]=2;
     pipeline p(s);
-    cout<<myMemory[1]<<endl;
+    cout<<myRegister[2]<<endl;
+    cout<<myMemory[0]<<endl;
     
 }

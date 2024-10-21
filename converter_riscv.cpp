@@ -358,7 +358,7 @@ void assembler :: utype(){
 }
 
 int main(){
-    string s="p.s";
+    string s="negativeL.s";
     // cout<<"ENTER THE STRING: ";
     // getline(cin, s);
     assembler a(s);
