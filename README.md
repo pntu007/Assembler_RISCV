@@ -1,61 +1,56 @@
-# Converter RISC-V
+# RISC-V
 
 ## Overview
 
-This project is a RISC-V instruction to binary converter written in C++. It translates a set of supported RISC-V assembly instructions into their corresponding binary machine code.
+This project consists of three scripts namely assembler_risv.cpp, pipeline_riscv.cpp and nonPipeline_risv.cpp. Assembler Script converts RISC-V instruction to Machine Language. Pipeline or Non-Pipeline script can be used to process the Machine Language produces by the assembler to generate the output. 
 
 ## Supported Instructions
 
-The converter supports the following instructions, grouped by their types:
+The assembler supports the following instructions, grouped by their types:
 
 ### R-Type Instructions
-- `add`
-- `sub`
-- `and`
-- `or`
-- `xor`
-- `sll`
-- `srl`
-- `slt`
+- `add` - Addition
+- `sub` - Subtraction
+- `and` - And
+- `or`  - Or
+- `xor` - Xor
+- `sll` - Shift Left Logical
+- `srl` - Shift Right Logical
+- `mul` - Multiplication
 
 ### I-Type Instructions
-- `addi`
-- `xori`
-- `ori`
-- `andi`
-- `slli`
-- `srli`
+- `addi` - Addition Immediate
+- `xori` - Xor Immediate
+- `ori` - Or Immediate
+- `andi` - And Immediate
+- `slli` - Shift Left Logical Immediate
+- `srli` - Shift Right Logical Immediate
 
 ### L-Type Instructions (Load)
-- `lb`
-- `lh`
-- `lw`
-- `lbu`
-- `lhu`
+- `lb` - Load Byte
+- `lh` - Load Half
+- `lw` - Load Word
+- `lbu` - Load Byte (U)
+- `lhu` - Load Half (U)
 
 ### S-Type Instructions (Store)
-- `sb`
-- `sh`
-- `sw`
+- `sb` - Store Byte
+- `sh` - Store Half
+- `sw` - Store Word 
 
 ### J-Type Instruction
-- `jal`
+- `jal` - Jump and Link
 
 ### B-Type Instructions (Branch)
-- `beq`
-- `bne`
-- `blt`
-- `bge`
-- `bltu`
-- `bgeu`
+- `beq` - Branch ==
+- `bne` - Branch !=
+- `blt` - Branch <
+- `bge` - Branch >=
+- `bltu` - Branch < (U)
+- `bgeu` - Branch >= (U)
 
 ### U-Type Instruction
-- `lui`
-
-## Features
-- Converts RISC-V assembly instructions into their binary format.
-- Supports multiple instruction types: R, I, L, S, J, B, and U.
-- The encoding of Immediate in the B and J type instruction is done in normal form rather than that given in the RISCV_CARD
+- `lui` - Load Upper Immediate
 
 ## Getting Started
 
@@ -63,44 +58,64 @@ The converter supports the following instructions, grouped by their types:
 - C++ Compiler (e.g., g++, clang++)
 
 ### Compilation
-- First create a input file inside the testing folder
-- Write the input file name in the main function of converter_riscv.cpp
-- Then compile the converter_riscv.cpp
-- To compile, you can run the following command:
+- First create a input file inside the testing folder with ".s" extension
+- Write the input file name in the main function of pipeline_riscv.cpp or nonPipeline_risv.cpp
+- At the same type write the same file name with ".o" extension
+- Note : The file name with ".o" extension will created along the way. No need for the user to create it.
+- Then compile the pipeline_riscv.cpp or nonPipeline_riscv.cpp which ever the user want to use.
+- To compile, you can run the following command: (assuming pipeline_risv.cpp is being used)
 
 ```bash
-g++ -o assembler_riscv assembler_riscv.cpp
+g++ -o pipeline_riscv pipeline_riscv.cpp
 ```
 
-Once compiled, the output file will be generated inside the testing folder. <br>
-There are RISCV_CARD and few other cpp script inside the helper folder. <br>
-RISCV_CARD contains the all information regarding the instructions opcode, function3 value, function7 value <br>
-Most of the values used inside the assembler_rissv.cpp is same as it is given in the card. <br>
+Once compiled, the binary file will be generated inside the testing folder with ".o" extension. <br>
+The output can be checked by printing the register and memory location used. <br>
+To check the output user have to use the `cout` inside the main function by himself/herself. <br> 
+<br><br>
 
 ### Example Input
 
+#### Rules to Write Input File
+- Total of 32 Register are available (0-31).
+- To access register use `x` foolowed by number. Example : `x4` for 4th Register  .
+- Use only lower case for the instruction, give space to distinguish and use `,` to after register. 
+- Label naming is not case senitive, but kindly use lower case only
+- Negative Immediate is NOT SUPPORTED , kindly use `sub` for the same
+
 ```assembly
-addi x18, x18,516
+lw x18, 0(x0)
+
 l:
-andi x28,x18,1
-add x19, x19, x28
-srli x18,x18,1
-beq x18,x0, r
-jal x5, l
+    andi x28, x18, 1
+    add x19, x19, x28
+    srli x18, x18, 1
+    beq x18, x0, r
+    jal x5, l
 r:
+    sw x19, 1(x0)
 ```
 
-### Example Output
+### Example Main Function
 
-The converter will output the binary encoding of each instruction in new file inside the testing folder.
-```binary
-00100000010010010000100100010011
-00000000000110010111111000010011
-00000001110010011000100110110011
-00000000000110010101100100010011
-00000000000010010000000101100011
-11111111110111111111001011101111
+The main function assuming the file name of above is `setBit` . As the user can see the value that needs to be used as input written in the memory before assembler is invoked. And the final values will stored in the memory location and register is printed using the `cout` after pipeline is invoked.<br>
+- Register are named `myRegister`
+- Memory is named `myMemory` <br>
+```main
+int main(){
+    string s1 = "setBit.s";
+    string s2 = "setBit.o";
+
+    myMemory[0]=5;
+
+    assembler a(s1);
+    pipeline p(s2);
+
+    cout<<myMemory[1]<<endl;
+}
 ```
+## Other Features
+- Inside the 
 
 ## Contributing
 

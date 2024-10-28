@@ -1,8 +1,6 @@
 #include<iostream>
 #include<vector>
 #include<unordered_map>
-// #include<algorithm>
-// #include<bits/stdc++.h>
 #include <fstream>
 #include <string>
 
@@ -11,7 +9,7 @@ using namespace std;
 unordered_map<string,char>m{
     {"add",'R'},{"sub",'R'},{"and",'R'},
     {"or",'R'},{"xor",'R'},{"sll",'R'},
-    {"srl",'R'},{"slt",'R'},
+    {"srl",'R'},{"mul",'R'},
 
     {"addi",'I'},{"xori",'I'},{"ori",'I'},
     {"andi",'I'},{"slli",'I'},{"srli",'I'},
@@ -102,14 +100,6 @@ class assembler{
                 }
             }
             return inBinary;
-            // string inBinary = "";
-            // while(num!=0){
-            //     inBinary += '0'+(num%2);
-            //     num/=2;
-            // }
-            // int n = inBinary.size();
-            // for(int i=0;i<length-n;i++) inBinary+='0';
-            // reverse(inBinary.begin(),inBinary.end());
         }
 
         void checkInstructionFormat(string s){
@@ -194,17 +184,15 @@ class assembler{
             inputFile.clear();
             label.clear();
             binaryString.clear();
-
-            // cout<<binaryString<<endl;
-            // ofstream MyFile("filename.txt", ios::app);
-            // MyFile.seekp(0, ios::end);
-            // streampos currentPosition = MyFile.tellp();
-
-            // if(currentPosition != 0) MyFile<<"\n";
-            
-            // MyFile<<binaryString;
-            // MyFile.close();
        }
+
+       void rtype();
+       void itype();
+       void iltype();
+       void stype();
+       void jtype(int);
+       void btype(int);
+       void utype();
 
     public:
        assembler(string a){
@@ -225,13 +213,6 @@ class assembler{
             cout<<"TASK COMPLETE!!"<<endl;
        }  
        
-       void rtype();
-       void itype();
-       void iltype();
-       void stype();
-       void jtype(int);
-       void btype(int);
-       void utype();
 };
 
 void assembler :: rtype(){
@@ -241,7 +222,7 @@ void assembler :: rtype(){
 
     if(instructionSplit[0]=="add") f3 = "000";
     else if(instructionSplit[0]=="sll") f3 = "001";
-    else if(instructionSplit[0]=="slt") f3 = "010";
+    else if(instructionSplit[0]=="mul") f3 = "010";
     else if(instructionSplit[0]=="sub") f3 = "011";
     else if(instructionSplit[0]=="xor") f3 = "100";
     else if(instructionSplit[0]=="srl") f3 = "101";
@@ -355,30 +336,4 @@ void assembler :: utype(){
     string imm = getBinary(instructionSplit[2],20);
 
     binaryString.push_back(imm + rd + opcode);
-}
-
-int main(){
-    string s="negativeL.s";
-    // cout<<"ENTER THE STRING: ";
-    // getline(cin, s);
-    assembler a(s);
-
-    // string myText;
-    // ifstream MyReadFile("filename.txt");
-    // while(getline(MyReadFile, myText)){
-    //      cout << myText<<endl;
-    // }
-    // MyReadFile.close();
-
-// 00000000010100100000000110110011
-// 00000000101000011000000110010011
-// 00000000001000011001000111100011
-// 00000000101000011010000100000011
-// 10000000000000000010000101101111
-// 00000000000100011010011010100011
-
-// 3. 
-// 00000000001000011001000101100011
-// 5
-// 10000000010000000000000101101111
 }

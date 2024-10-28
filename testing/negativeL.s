@@ -1,7 +1,4 @@
-add x3,x4,x5
-addi x3,x3,10
-for :
-    bne x3,x2, done
-    lw x2,10(x3)
-    jal x2, for
-done:
+addi x2, x0, 2
+addi x3, x2, 4
+add x4, x2, x3
+sw x4, 0(x0)
