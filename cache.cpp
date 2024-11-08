@@ -185,8 +185,8 @@ public:
         }
 
         cout<<endl;
-        cout<<"Hit rate  : "<<(hit*1.0/100000)<<endl;
-        cout<<"Miss rate : "<<(miss*1.0/100000)<<endl;
+        cout<<"Hit rate  : "<<(hit*1.0/toPrint)<<endl;
+        cout<<"Miss rate : "<<(miss*1.0/toPrint)<<endl;
     }
 };
 
