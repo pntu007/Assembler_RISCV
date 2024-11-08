@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project consists of three scripts namely assembler_risv.cpp, pipeline_riscv.cpp and nonPipeline_risv.cpp. Assembler Script converts RISC-V instruction to Machine Language. Pipeline or Non-Pipeline script can be used to process the Machine Language produces by the assembler to generate the output. 
+This project consists of three scripts namely `assembler_risv.cpp`, `pipeline_riscv.cpp` and `nonPipeline_risv.cpp`. Assembler Script converts RISC-V instruction to Machine Language. Pipeline or Non-Pipeline script can be used to process the Machine Language produces by the assembler to generate the output. <br> There is another script named `cache.cpp` which shows the implementation of set associative cache.
 
 ## Supported Instructions
 
@@ -128,6 +128,12 @@ int main(){
     - In pipeline script, all the instructions are executed in 5 stage pipeline of RISCV
     - In non pipeline script, one instruction is executed at a time and after its completion, the execution of next instruction takes place.
     - Difference can be seen when the number of lines of code increases. The pipeline is much faster as compared to the non pipeline. 
+
+## Cache
+- Interested User can check out the set associative cache implementation
+- Potential changes that can be done includes random replacement algorithm which is set to random
+- Interested User could try their own algorithms or the standards ones (like lru, lfu, fifo ) by implementing them inside `getNewLocation` function
+- Intersting feature is `handleRandomRequests2` function which generates random number based on normal distribution function and calculates the hit and miss rate
 
 ## Contributing
 
