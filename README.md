@@ -2,7 +2,17 @@
 
 ## Overview
 
-This project consists of three scripts namely `assembler_risv.cpp`, `pipeline_riscv.cpp` and `nonPipeline_risv.cpp`. Assembler Script converts RISC-V instruction to Machine Language. Pipeline or Non-Pipeline script can be used to process the Machine Language produces by the assembler to generate the output. <br> There is another script named `cache.cpp` which shows the implementation of set associative cache.
+This project consists of three scripts, namely [`assembler_risv.cpp`](#supported-instructions), [`pipeline_riscv.cpp`](#getting-started), and [`nonPipeline_risv.cpp`](#getting-started). The Assembler Script converts RISC-V instructions to Machine Language, while the Pipeline or Non-Pipeline script processes the Machine Language produced by the assembler to generate output. Additionally, there is a [`cache.cpp`](#cache) script demonstrating a set-associative cache implementation.
+
+## Table of Contents
+- [Overview](#overview)
+- [Supported Instructions](#supported-instructions)
+- [Getting Started](#getting-started)
+- [Example Input](#example-input)
+- [Example Main Function](#example-main-function)
+- [Other Features](#other-features)
+- [Cache](#cache)
+- [Contributing](#contributing)
 
 ## Supported Instructions
 
@@ -58,29 +68,23 @@ The assembler supports the following instructions, grouped by their types:
 - C++ Compiler (e.g., g++, clang++)
 
 ### Compilation
-- First create a input file inside the testing folder with ".s" extension
-- Write the input file name in the main function of pipeline_riscv.cpp or nonPipeline_risv.cpp
-- At the same type write the same file name with ".o" extension
-- Note : The file name with ".o" extension will created along the way. No need for the user to create it.
-- Then compile the pipeline_riscv.cpp or nonPipeline_riscv.cpp which ever the user want to use.
-- To compile, you can run the following command: (assuming pipeline_risv.cpp is being used)
+- First, create an input file inside the testing folder with a ".s" extension.
+- Specify the input file name in the main function of `pipeline_riscv.cpp` or `nonPipeline_risv.cpp`.
+- Use the same file name with a ".o" extension; this file will be created automatically. 
+- Compile the chosen script, either pipeline or non-pipeline:
+  ```bash
+  g++ -o pipeline_riscv pipeline_riscv.cpp
+  ```
+- The output can be verified by printing the register and memory locations as needed with `cout` statements.
 
-```bash
-g++ -o pipeline_riscv pipeline_riscv.cpp
-```
-
-Once compiled, the binary file will be generated inside the testing folder with ".o" extension. <br>
-The output can be checked by printing the register and memory location used. <br>
-To check the output user have to use the `cout` inside the main function by himself/herself. <br> 
-
-### Example Input
+## Example Input
 
 #### Rules to Write Input File
-- Total of 32 Register are available (0-31).
-- To access register use `x` foolowed by number. Example : `x4` for 4th Register  .
-- Use only lower case for the instruction, give space to distinguish and use `,` to after register. 
-- Label naming is not case senitive, but kindly use lower case only
-- Negative Immediate is NOT SUPPORTED , kindly use `sub` for the same
+- 32 registers are available (0-31).
+- Access registers with `x` followed by the register number, e.g., `x4` for the 4th register.
+- Use lowercase for instructions, with spaces to separate parts, and commas after each register. 
+- Labels are case-insensitive; lowercase is recommended.
+- Negative immediates are NOT SUPPORTED; use `sub` for negative values.
 
 ```assembly
 lw x18, 0(x0)
@@ -95,45 +99,35 @@ r:
     sw x19, 1(x0)
 ```
 
-### Example Main Function
+## Example Main Function
 
-The main function assuming the file name of above is `setBit` . As the user can see, the value that needs to be used as input, has to be written in the memory before the assembler is invoked. And the final values will stored in the memory location and register is printed using the `cout` after the pipeline is invoked.<br>
-- Registers are named `myRegister`
-- Memory is named `myMemory` <br>
-```main
+The main function assumes an input file named `setBit`. Input values are written to memory before invoking the assembler. Final values are stored in memory locations and registers, printed using `cout` after pipeline invocation.
+
+```cpp
 int main(){
     string s1 = "setBit.s";
     string s2 = "setBit.o";
 
-    myMemory[0]=5;
+    myMemory[0] = 5;
 
     assembler a(s1);
     pipeline p(s2);
 
-    cout<<myMemory[1]<<endl;
+    cout << myMemory[1] << endl;
 }
 ```
+
 ## Other Features
-- The Helper folder contains the following
-    - An `outputChecker.cpp` script to check the output of assembler with manual written binary code (It was used by me to check weather assembler was working as it was supposed to or not).
-    - `RISCV_CARD` pdf contains the cheat sheat for all the riscv instruction supported by real RISCV system
-    - `try.cpp` was used by me to implement the checking of instruction format (If you like you can play with it).  
-- The implementation of offset calculation for Branch and Jump type is different from the original way.
-- Kindly note that implementation of `sub` and `mul` is not same as it is given in the `RISCV_CARD`. 
-- The difference for both can be seen by comparing the binary generated by my assembler with that generated [here](https://luplab.gitlab.io/rvcodecjs/). 
-- All the deviation were done to make implementation a little easier for me.    
-- The Testing folder contains assembly script. Their are few script already present. Feel free to check them out and add more.
-- The option to either use Pipeline or Non-Pipeline is entirely upto the user.
-- Both produce the same result with the only difference being in the execution pattern. 
-    - In pipeline script, all the instructions are executed in 5 stage pipeline of RISCV
-    - In non pipeline script, one instruction is executed at a time and after its completion, the execution of next instruction takes place.
-    - Difference can be seen when the number of lines of code increases. The pipeline is much faster as compared to the non pipeline. 
+- **Helper Folder**: Contains scripts for testing, such as `outputChecker.cpp` (checks assembler output against manually written binary code) and `try.cpp` (for testing instruction format checks).
+- **Offset Calculation**: Branch and Jump types have a unique offset calculation compared to the [standard](https://luplab.gitlab.io/rvcodecjs/).
+- **Custom Implementations**: Variants of `sub` and `mul` make the implementation simpler.
+- **Testing Folder**: Contains pre-existing assembly scripts for reference and further testing.
 
 ## Cache
-- Interested User can check out the set associative cache implementation
-- Potential changes that can be done includes random replacement algorithm which is set to random
-- Interested User could try their own algorithms or the standards ones (like lru, lfu, fifo ) by implementing them inside `getNewLocation` function
-- Intersting feature is `handleRandomRequests2` function which generates random number based on normal distribution function and calculates the hit and miss rate
+
+- This project includes a set-associative cache.
+- Users can implement custom replacement algorithms (e.g., LRU, LFU, FIFO) in the `getNewLocation` function.
+- The `handleRandomRequests2` function generates normal-distributed random numbers for hit and miss rate calculations.
 
 ## Contributing
 
